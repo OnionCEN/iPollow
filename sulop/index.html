@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sulop - iPollow</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bpmf+Huninn&family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif+TC:wght@200..900&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --surface-hover: #1a1a1a;
+            --border: #2a2a2a;
+            --accent: #0099ff;
+            --accent-glow: #00bbff;
+            --text: #e0e0e0;
+            --text-muted: #888;
+            --radius: 14px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Bpmf Huninn', 'PingFang SC', 'Microsoft YaHei', 'SimHei', sans-serif;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(ellipse at 30% 20%, rgba(0,153,255,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(0,153,255,0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .profile-container {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        /* 返回按钮 */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        /* 主卡片 */
+        .profile-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 3rem 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-glow), var(--accent));
+        }
+
+        /* 头像 */
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .avatar {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .avatar-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--accent);
+            border-right-color: var(--accent);
+            animation: avatarSpin 4s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes avatarSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 状态指示灯 */
+        .status-dot {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 18px;
+            height: 18px;
+            background: #ffaa00;
+            border-radius: 50%;
+            border: 3px solid var(--surface);
+            box-shadow: 0 0 12px rgba(255,170,0,0.5);
+        }
+
+        /* 名称 */
+        .profile-name {
+            font-family: 'ZCOOL QingKe HuangYou', 'SimHei', sans-serif;
+            font-size: 2.2rem;
+            color: #fff;
+            letter-spacing: 2px;
+            margin-bottom: 0.3rem;
+        }
+
+        /* 角色标签 */
+        .role-badge {
+            display: inline-block;
+            background: rgba(0,153,255,0.15);
+            color: var(--accent);
+            border: 1px solid rgba(0,153,255,0.3);
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+        }
+
+        /* 分割线 */
+        .divider {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            margin: 0 auto 1.8rem;
+        }
+
+        /* 简介区域 */
+        .bio-section {
+            text-align: left;
+            margin-bottom: 1.8rem;
+        }
+
+        .bio-label {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.6rem;
+        }
+
+        .bio-text {
+            color: var(--text);
+            line-height: 1.9;
+            font-size: 1rem;
+        }
+
+        .bio-text .highlight {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* 信息网格 */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .info-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .info-item .info-label {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-item .info-value {
+            font-size: 0.95rem;
+            color: #fff;
+        }
+
+        /* 社交链接 */
+        .social-links {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.7rem 1.2rem;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .social-btn:hover {
+            border-color: var(--accent);
+            background: rgba(0,153,255,0.08);
+            color: var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .social-btn.bilibili:hover {
+            border-color: #fb7299;
+            background: rgba(251,114,153,0.1);
+            color: #fb7299;
+        }
+
+        /* 页脚 */
+        .profile-footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.7rem;
+            color: #444;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 500px) {
+            body { padding: 1rem; }
+            .profile-card { padding: 2rem 1.5rem; }
+            .info-grid { grid-template-columns: 1fr; }
+            .avatar { width: 110px; height: 110px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <!-- 返回链接 -->
+        <a href="https://ipollow.top" class="back-link" id="backLink">← 返回首页</a>
+
+        <!-- 个人资料卡片 -->
+        <div class="profile-card">
+            <!-- 头像 -->
+            <div class="avatar-wrapper">
+                <img src="https://i.postimg.cc/CxwjFcw3/sulop128.jpg" alt="Sulop" class="avatar" loading="lazy">
+                <div class="status-dot"></div>
+            </div>
+
+            <!-- 名称 -->
+            <h1 class="profile-name">Sulop</h1>
+
+            <!-- 角色 -->
+            <div class="role-badge" id="roleBadge">iPollow 辅助管理员</div>
+
+            <div class="divider"></div>
+
+            <!-- 简介 -->
+            <div class="bio-section">
+                <div class="bio-label" id="bioLabel">关于</div>
+                <p class="bio-text" id="bioText">
+                    <span class="highlight">iPollow.top</span> 的辅助管理员。<br>
+                    协助网站日常维护与社区管理工作。<br>
+                    为 <span class="highlight">KZ</span> 社区提供支持与帮助。
+                </p>
+            </div>
+
+            <!-- 详细信息 -->
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label" id="infoRoleLabel">职位</div>
+                    <div class="info-value" id="infoRoleValue">辅助管理员</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label" id="infoJoinLabel">加入时间</div>
+                    <div class="info-value">2024</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label" id="infoSiteLabel">网站</div>
+                    <div class="info-value" style="color:var(--accent);">iPollow.top</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label" id="infoStatusLabel">状态</div>
+                    <div class="info-value" style="color:#ffaa00;" id="infoStatusValue">忙碌中</div>
+                </div>
+            </div>
+
+            <!-- 社交链接 -->
+            <div class="social-links">
+                <a href="https://b23.tv/pPtxBbx" target="_blank" rel="noopener noreferrer" class="social-btn bilibili">
+                    📺 哔哩哔哩
+                </a>
+                <a href="https://t.me/ipollowkz" target="_blank" rel="noopener noreferrer" class="social-btn">
+                    ✈️ Telegram
+                </a>
+                <a href="https://ipollow.top" class="social-btn">
+                    🌐 iPollow.top
+                </a>
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="profile-footer" id="footerText">© 2026 iPollow KZ</div>
+    </div>
+
+    <script>
+        // ==================== 语言包 ====================
+        const translations = {
+            'zh': {
+                backLink: '← 返回首页',
+                roleBadge: 'iPollow 辅助管理员',
+                bioLabel: '关于',
+                bioText: '<span class="highlight">iPollow.top</span> 的辅助管理员。<br>协助网站日常维护与社区管理工作。<br>为 <span class="highlight">KZ</span> 社区提供支持与帮助。',
+                infoRoleLabel: '职位',
+                infoRoleValue: '辅助管理员',
+                infoJoinLabel: '加入时间',
+                infoSiteLabel: '网站',
+                infoStatusLabel: '状态',
+                infoStatusValue: '忙碌中',
+                footerText: '© 2026 iPollow KZ'
+            },
+            'en': {
+                backLink: '← Back to Home',
+                roleBadge: 'iPollow Assistant Admin',
+                bioLabel: 'About',
+                bioText: 'Assistant administrator of <span class="highlight">iPollow.top</span>.<br>Assists with daily website maintenance and community management.<br>Provides support and help to the <span class="highlight">KZ</span> community.',
+                infoRoleLabel: 'Role',
+                infoRoleValue: 'Assistant Admin',
+                infoJoinLabel: 'Joined',
+                infoSiteLabel: 'Website',
+                infoStatusLabel: 'Status',
+                infoStatusValue: 'Busy',
+                footerText: '© 2026 iPollow KZ'
+            },
+            'ru': {
+                backLink: '← На главную',
+                roleBadge: 'Помощник админа iPollow',
+                bioLabel: 'О себе',
+                bioText: 'Помощник администратора <span class="highlight">iPollow.top</span>.<br>Помогает в ежедневном обслуживании сайта и управлении сообществом.<br>Оказывает поддержку сообществу <span class="highlight">KZ</span>.',
+                infoRoleLabel: 'Должность',
+                infoRoleValue: 'Помощник админа',
+                infoJoinLabel: 'Присоединился',
+                infoSiteLabel: 'Сайт',
+                infoStatusLabel: 'Статус',
+                infoStatusValue: 'Занят',
+                footerText: '© 2026 iPollow KZ'
+            }
+        };
+
+        function updatePage(lang) {
+            const t = translations[lang];
+            if (!t) return;
+            document.getElementById('backLink').textContent = t.backLink;
+            document.getElementById('roleBadge').textContent = t.roleBadge;
+            document.getElementById('bioLabel').textContent = t.bioLabel;
+            document.getElementById('bioText').innerHTML = t.bioText;
+            document.getElementById('infoRoleLabel').textContent = t.infoRoleLabel;
+            document.getElementById('infoRoleValue').textContent = t.infoRoleValue;
+            document.getElementById('infoJoinLabel').textContent = t.infoJoinLabel;
+            document.getElementById('infoSiteLabel').textContent = t.infoSiteLabel;
+            document.getElementById('infoStatusLabel').textContent = t.infoStatusLabel;
+            document.getElementById('infoStatusValue').textContent = t.infoStatusValue;
+            document.getElementById('footerText').textContent = t.footerText;
+        }
+
+        async function detectIP() {
+            try {
+                const r = await fetch('https://ipapi.co/json/');
+                const d = await r.json();
+                return d.country_code;
+            } catch {
+                try {
+                    const r = await fetch('http://ip-api.com/json/');
+                    const d = await r.json();
+                    return d.countryCode;
+                } catch {
+                    return 'CN';
+                }
+            }
+        }
+
+        function getLanguage(cc) {
+            const map = {
+                'CN':'zh','HK':'zh','TW':'zh','MO':'zh','SG':'zh',
+                'US':'en','GB':'en','CA':'en','AU':'en','NZ':'en','IE':'en',
+                'RU':'ru','BY':'ru','KZ':'ru',
+                'IL':'block'
+            };
+            return map[cc] || 'en';
+        }
+
+        async function init() {
+            const cc = await detectIP();
+            const lang = getLanguage(cc);
+            if (lang === 'block') {
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0a0a0a;color:#ff3333;text-align:center;font-family:Manrope,sans-serif;"><div><div style="font-size:5rem;">🚫</div><h1>ACCESS DENIED</h1></div></div>';
+                return;
+            }
+            updatePage(lang);
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
