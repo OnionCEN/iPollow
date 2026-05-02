@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPollow KZ</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bpmf+Huninn&family=Manrope:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Serif+TC:wght@200..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --surface: #141414;
+            --surface-hover: #1a1a1a;
+            --border: #2a2a2a;
+            --border-glow: #ff6600;
+            --text: #e0e0e0;
+            --text-muted: #888;
+            --accent: #ff6600;
+            --accent-glow: #ff8800;
+            --announce-accent: #0099ff;
+            --announce-glow: #00bbff;
+            --success: #00cc66;
+            --danger: #ff3333;
+            --radius: 12px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Bpmf Huninn', 'PingFang SC', 'Microsoft YaHei', 'SimHei', sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(ellipse at 50% 0%, rgba(255,102,0,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 100%, rgba(0,150,255,0.04) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 1;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* ========== 标题 ========== */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-family: 'ZCOOL QingKe HuangYou', 'SimHei', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 400;
+            letter-spacing: 6px;
+            color: #fff;
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 2px;
+        }
+
+        .subtitle {
+            margin-top: 0.8rem;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 4px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* ========== 通用卡片 ========== */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.8rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            border-color: var(--border-glow);
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(255,102,0,0.08);
+        }
+
+        /* ========== 默认内容卡片 ========== */
+        .info-card {
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+            padding: 2.5rem 2rem;
+            border-left: 3px solid var(--accent);
+        }
+
+        .info-card .highlight {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* ========== 区域标题 ========== */
+        .section-header {
+            text-align: center;
+            margin: 2rem 0 1.5rem;
+            width: 100%;
+        }
+
+        .section-title {
+            font-family: 'ZCOOL QingKe HuangYou', 'SimHei', sans-serif;
+            font-size: 1.8rem;
+            color: #fff;
+            letter-spacing: 2px;
+        }
+
+        .section-line {
+            width: 60px;
+            height: 2px;
+            background: var(--accent);
+            margin: 0.5rem auto 0;
+            border-radius: 1px;
+        }
+
+        .section-line.blue {
+            background: var(--announce-accent);
+        }
+
+        /* ========== 卡片网格 ========== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* ========== 比赛卡片 ========== */
+        .match-card {
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+
+        .match-card:hover {
+            border-left-color: var(--accent);
+        }
+
+        .match-card .card-title {
+            font-family: 'ZCOOL QingKe HuangYou', 'SimHei', sans-serif;
+            font-size: 1.3rem;
+            color: var(--accent-glow);
+            margin-bottom: 0.8rem;
+        }
+
+        .match-card .card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .match-card .card-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .badge-on {
+            background: rgba(0,204,102,0.15);
+            color: var(--success);
+            border: 1px solid rgba(0,204,102,0.3);
+        }
+
+        .badge-off {
+            background: rgba(255,51,51,0.15);
+            color: var(--danger);
+            border: 1px solid rgba(255,51,51,0.3);
+        }
+
+        .card-hint {
+            margin-top: 0.8rem;
+            font-size: 0.75rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+
+        /* ========== 公告卡片 ========== */
+        .announce-card {
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+
+        .announce-card:hover {
+            border-left-color: var(--announce-accent);
+            border-color: var(--announce-accent);
+            box-shadow: 0 8px 32px rgba(0,150,255,0.08);
+        }
+
+        .announce-card .card-title {
+            font-family: 'ZCOOL QingKe HuangYou', 'SimHei', sans-serif;
+            font-size: 1.3rem;
+            color: var(--announce-glow);
+            margin-bottom: 0.8rem;
+        }
+
+        .announce-card .card-meta {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .announce-card .card-hint {
+            margin-top: 0.8rem;
+            font-size: 0.75rem;
+            color: var(--announce-accent);
+            letter-spacing: 2px;
+            opacity: 0.7;
+        }
+
+        /* ========== 联系方式 ========== */
+        .contact-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            margin-top: 3rem;
+            width: 100%;
+        }
+
+        .contact-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .contact-header span {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .contact-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.8rem 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .contact-item:hover {
+            border-color: var(--accent);
+            background: var(--surface-hover);
+        }
+
+        .contact-item .label {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .contact-link {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .contact-link:hover {
+            color: var(--accent-glow);
+        }
+
+        /* ========== 管理员区域 ========== */
+        .admin-section {
+            margin-top: 2.5rem;
+            width: 100%;
+            text-align: center;
+        }
+
+        .admin-title {
+            font-family: 'ZCOOL QingKe HuangYou', 'SimHei', sans-serif;
+            font-size: 1.3rem;
+            color: #fff;
+            letter-spacing: 2px;
+            margin-bottom: 1.2rem;
+        }
+
+        .admin-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .admin-card {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.7rem 1.2rem;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .admin-card:hover {
+            border-color: var(--accent);
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255,102,0,0.1);
+        }
+
+        .admin-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .admin-card:hover .admin-avatar {
+            border-color: var(--accent);
+        }
+
+        .admin-info {
+            text-align: left;
+        }
+
+        .admin-name {
+            font-family: 'ZCOOL QingKe HuangYou', 'SimHei', sans-serif;
+            font-size: 1.05rem;
+            color: #fff;
+        }
+
+        .admin-role {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .admin-role.primary {
+            color: var(--accent);
+        }
+
+        .admin-role.secondary {
+            color: var(--announce-accent);
+        }
+
+        /* ========== 弹窗 ========== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem 2.5rem;
+            max-width: 550px;
+            width: 100%;
+            position: relative;
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal.match-modal {
+            border-top: 3px solid var(--accent);
+        }
+
+        .modal.announce-modal {
+            border-top: 3px solid var(--announce-accent);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 0.8rem; right: 1rem;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            background: none; border: none;
+            transition: color 0.2s;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .modal-close:hover { color: #fff; }
+
+        .modal-title {
+            font-family: 'ZCOOL QingKe HuangYou', 'SimHei', sans-serif;
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            padding-right: 2rem;
+        }
+
+        .match-modal .modal-title { color: var(--accent-glow); }
+        .announce-modal .modal-title { color: var(--announce-glow); }
+
+        .modal-info { line-height: 2; font-size: 0.95rem; }
+
+        .modal-info .info-label {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .match-modal .info-label { color: var(--accent); }
+        .announce-modal .info-label { color: var(--announce-accent); }
+
+        /* ========== 页脚 ========== */
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.75rem;
+            color: #444;
+            letter-spacing: 2px;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 600px) {
+            .main-container { padding: 2rem 1rem; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .contact-section { flex-direction: column; }
+            .contact-item { width: 100%; justify-content: center; }
+            .admin-cards { flex-direction: column; align-items: center; }
+            .admin-card { width: 100%; max-width: 300px; justify-content: center; }
+            .modal { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- ===== 标题 ===== -->
+        <div class="header">
+            <h1 class="logo" id="mainTitle">iPollow KZ</h1>
+            <p class="subtitle">Kreedz Community</p>
+        </div>
+
+        <!-- ===== 公告区域 ===== -->
+        <div id="announceSection" style="display:none; width:100%; display:flex; flex-direction:column; align-items:center;">
+            <div class="section-header">
+                <div class="section-title" id="announceSectionTitle">📢 公告</div>
+                <div class="section-line blue"></div>
+            </div>
+            <div class="cards-grid" id="announceGrid"></div>
+        </div>
+
+        <!-- ===== 比赛区域 ===== -->
+        <div id="matchSection" style="display:none; width:100%; flex-direction:column; align-items:center;">
+            <div class="section-header">
+                <div class="section-title" id="matchSectionTitle">🏆 比赛</div>
+                <div class="section-line"></div>
+            </div>
+            <div class="cards-grid" id="matchesGrid"></div>
+        </div>
+
+        <!-- ===== 默认内容 ===== -->
+        <div class="card info-card" id="defaultContent">
+            <p id="mainContent" style="font-size:1.05rem; line-height:2;">
+                此网站是<span class="highlight">KZ非官方网站</span> iPollow.top<br>
+                目前网站正在<span class="highlight">准备举办比赛</span><br>
+                且 iPollow.top 目前<span class="highlight">并没有CS1.6服务器</span><br>
+                请大家耐心等待
+            </p>
+        </div>
+
+        <!-- ===== 联系方式 ===== -->
+        <div class="contact-section">
+            <div class="contact-header">
+                <span id="contactTitle">⚡ 联系方式</span>
+            </div>
+            <div class="contact-item">
+                <span class="label" id="qqLabel1">QQ</span>
+                <span>1101547404</span>
+            </div>
+            <div class="contact-item">
+                <span class="label">〈高老庄〉QQ</span>
+                <span>637107747</span>
+            </div>
+            <div class="contact-item">
+                <span class="label" id="telegramLabel">Telegram</span>
+                <a href="https://t.me/ipollowkz" target="_blank" rel="noopener noreferrer" class="contact-link">t.me/ipollowkz</a>
+            </div>
+        </div>
+
+        <!-- ===== 管理员 ===== -->
+        <div class="admin-section">
+            <div class="admin-title" id="adminTitle">iPollow管理员</div>
+            <div class="admin-cards">
+                <a href="https://iPollow.top/cnbamdal" target="_blank" rel="noopener noreferrer" class="admin-card">
+                    <img src="https://i.postimg.cc/BbWKRghM/bamdal128.jpg" alt="CNBamdal" class="admin-avatar" loading="lazy">
+                    <div class="admin-info">
+                        <div class="admin-name">CNBamdal</div>
+                        <div class="admin-role primary" id="adminRole1">主</div>
+                    </div>
+                </a>
+                <a href="https://iPollow.top/sulop" target="_blank" rel="noopener noreferrer" class="admin-card">
+                    <img src="https://i.postimg.cc/CxwjFcw3/sulop128.jpg" alt="Sulop" class="admin-avatar" loading="lazy">
+                    <div class="admin-info">
+                        <div class="admin-name">Sulop</div>
+                        <div class="admin-role secondary" id="adminRole2">副</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ===== 页脚 ===== -->
+        <div class="footer" id="footerText">© 2026 iPollow KZ</div>
+    </div>
+
+    <!-- ===== 比赛弹窗 ===== -->
+    <div class="modal-overlay" id="matchModal">
+        <div class="modal match-modal">
+            <button class="modal-close" id="matchModalClose">✕</button>
+            <h2 class="modal-title" id="modalMatchName"></h2>
+            <div class="modal-info" id="modalMatchInfo"></div>
+        </div>
+    </div>
+
+    <!-- ===== 公告弹窗 ===== -->
+    <div class="modal-overlay" id="announceModal">
+        <div class="modal announce-modal">
+            <button class="modal-close" id="announceModalClose">✕</button>
+            <h2 class="modal-title" id="modalAnnounceTitle"></h2>
+            <div class="modal-info" id="modalAnnounceInfo"></div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== 语言包 ====================
+        const translations = {
+            'zh': {
+                title: 'iPollow KZ',
+                noMatchContent: '此网站是<span class="highlight">KZ非官方网站</span> iPollow.top<br>目前网站正在<span class="highlight">准备举办比赛</span><br>且 iPollow.top 目前<span class="highlight">并没有CS1.6服务器</span><br>请大家耐心等待',
+                contactTitle: '⚡ 联系方式',
+                qqLabel: 'QQ',
+                telegramLabel: 'Telegram',
+                adminTitle: 'iPollow管理员',
+                adminRole1: '主',
+                adminRole2: '副',
+                footer: '© 2026 iPollow KZ',
+                clickToView: '点击查看详情 →',
+                matchSectionTitle: '🏆 比赛',
+                announceSectionTitle: '📢 公告',
+                matchName: '比赛名称',
+                matchRules: '比赛规则',
+                matchOrganizer: '举办者',
+                matchMap: '比赛地图',
+                matchTime: '比赛时间',
+                serverStatus: '服务器状态',
+                serverOn: '服务器举行',
+                serverOff: '非服务器举行',
+                announceTitle: '公告标题',
+                announceContent: '公告内容',
+                announceTime: '发布时间',
+                announceAuthor: '发布者'
+            },
+            'en': {
+                title: 'iPollow KZ',
+                noMatchContent: 'This website is the <span class="highlight">unofficial KZ website</span> iPollow.top<br>The website is currently <span class="highlight">preparing to hold a competition</span><br>and iPollow.top currently <span class="highlight">does not have CS1.6 servers</span><br>Please be patient',
+                contactTitle: '⚡ Contact',
+                qqLabel: 'QQ',
+                telegramLabel: 'Telegram',
+                adminTitle: 'iPollow Admins',
+                adminRole1: 'Main',
+                adminRole2: 'Vice',
+                footer: '© 2026 iPollow KZ',
+                clickToView: 'Click for details →',
+                matchSectionTitle: '🏆 Matches',
+                announceSectionTitle: '📢 Announcements',
+                matchName: 'Match Name',
+                matchRules: 'Rules',
+                matchOrganizer: 'Organizer',
+                matchMap: 'Map',
+                matchTime: 'Time',
+                serverStatus: 'Server Status',
+                serverOn: 'On Server',
+                serverOff: 'Off Server',
+                announceTitle: 'Title',
+                announceContent: 'Content',
+                announceTime: 'Date',
+                announceAuthor: 'Author'
+            },
+            'ru': {
+                title: 'iPollow KZ',
+                noMatchContent: 'Этот сайт является <span class="highlight">неофициальным сайтом KZ</span> iPollow.top<br>В настоящее время сайт <span class="highlight">готовится к проведению соревнований</span><br>и iPollow.top в настоящее время <span class="highlight">не имеет серверов CS1.6</span><br>Пожалуйста, подождите',
+                contactTitle: '⚡ Контакты',
+                qqLabel: 'QQ',
+                telegramLabel: 'Telegram',
+                adminTitle: 'Администраторы iPollow',
+                adminRole1: 'Главный',
+                adminRole2: 'Зам.',
+                footer: '© 2026 iPollow KZ',
+                clickToView: 'Подробнее →',
+                matchSectionTitle: '🏆 Матчи',
+                announceSectionTitle: '📢 Объявления',
+                matchName: 'Название',
+                matchRules: 'Правила',
+                matchOrganizer: 'Организатор',
+                matchMap: 'Карта',
+                matchTime: 'Время',
+                serverStatus: 'Сервер',
+                serverOn: 'На сервере',
+                serverOff: 'Не на сервере',
+                announceTitle: 'Заголовок',
+                announceContent: 'Содержание',
+                announceTime: 'Дата',
+                announceAuthor: 'Автор'
+            }
+        };
+
+        let currentLang = 'zh';
+        let matchesData = [];
+        let announcesData = [];
+
+        // ==================== 比赛检测 ====================
+        async function scanMatches() {
+            const matchDirs = [];
+            for (let i = 1; i <= 20; i++) {
+                try {
+                    const response = await fetch(`match/match${i}/index.txt`);
+                    if (response.ok) {
+                        const text = await response.text();
+                        const data = parseMatchData(text);
+                        if (data) { data.dirName = 'match' + i; matchDirs.push(data); }
+                    }
+                } catch (e) {}
+            }
+            return matchDirs;
+        }
+
+        function parseMatchData(text) {
+            const data = {};
+            text.split('\n').forEach(line => {
+                const trimmed = line.trim();
+                if (!trimmed || trimmed.startsWith('#')) return;
+                const idx = trimmed.indexOf('=');
+                if (idx === -1) return;
+                data[trimmed.substring(0, idx).trim()] = trimmed.substring(idx + 1).trim();
+            });
+            if (!data['match-name']) return null;
+            return {
+                name: data['match-name'] || 'Unknown',
+                rules: data['match-rules'] || 'N/A',
+                organizer: data['match-organizer'] || 'N/A',
+                map: data['match-map'] || 'N/A',
+                server: (data['server'] || '').toUpperCase() === 'ON',
+                time: data['match-time'] || 'N/A'
+            };
+        }
+
+        // ==================== 公告检测 ====================
+        async function scanAnnounces() {
+            const dirs = [];
+            for (let i = 1; i <= 20; i++) {
+                try {
+                    const response = await fetch(`gonggao/gonggao${i}/gonggao.txt`);
+                    if (response.ok) {
+                        const text = await response.text();
+                        const data = parseAnnounceData(text);
+                        if (data) { data.dirName = 'gonggao' + i; dirs.push(data); }
+                    }
+                } catch (e) {}
+            }
+            return dirs;
+        }
+
+        function parseAnnounceData(text) {
+            const data = {};
+            text.split('\n').forEach(line => {
+                const trimmed = line.trim();
+                if (!trimmed || trimmed.startsWith('#')) return;
+                const idx = trimmed.indexOf('=');
+                if (idx === -1) return;
+                data[trimmed.substring(0, idx).trim()] = trimmed.substring(idx + 1).trim();
+            });
+            if (!data['gonggao-title']) return null;
+            return {
+                title: data['gonggao-title'] || 'Unknown',
+                content: data['gonggao-content'] || 'N/A',
+                time: data['gonggao-time'] || 'N/A',
+                author: data['gonggao-author'] || 'N/A'
+            };
+        }
+
+        // ==================== 渲染 ====================
+        function renderMatches() {
+            const grid = document.getElementById('matchesGrid');
+            const section = document.getElementById('matchSection');
+            const t = translations[currentLang];
+            grid.innerHTML = '';
+
+            if (matchesData.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            section.style.display = 'flex';
+
+            matchesData.forEach((m, i) => {
+                const card = document.createElement('div');
+                card.className = 'card match-card';
+                card.onclick = () => openMatchModal(i);
+                const sc = m.server ? 'badge-on' : 'badge-off';
+                const st = m.server ? t.serverOn : t.serverOff;
+                card.innerHTML = `
+                    <div class="card-title">${esc(m.name)}</div>
+                    <div class="card-meta">
+                        <span>🗺️ ${esc(m.map)}</span>
+                        <span>👤 ${esc(m.organizer)}</span>
+                        <span>🕐 ${esc(m.time)}</span>
+                        <span><span class="badge ${sc}">${st}</span></span>
+                    </div>
+                    <div class="card-hint">${t.clickToView}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderAnnounces() {
+            const grid = document.getElementById('announceGrid');
+            const section = document.getElementById('announceSection');
+            const t = translations[currentLang];
+            grid.innerHTML = '';
+
+            if (announcesData.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            section.style.display = 'flex';
+
+            announcesData.forEach((a, i) => {
+                const card = document.createElement('div');
+                card.className = 'card announce-card';
+                card.onclick = () => openAnnounceModal(i);
+                card.innerHTML = `
+                    <div class="card-title">${esc(a.title)}</div>
+                    <div class="card-meta">
+                        <div>📅 ${esc(a.time)}</div>
+                        <div>✍️ ${esc(a.author)}</div>
+                    </div>
+                    <div class="card-hint">${t.clickToView}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function updateDefaultContent() {
+            const dc = document.getElementById('defaultContent');
+            if (matchesData.length === 0 && announcesData.length === 0) {
+                dc.style.display = 'block';
+                document.getElementById('matchSection').style.display = 'none';
+                document.getElementById('announceSection').style.display = 'none';
+            } else {
+                dc.style.display = 'none';
+            }
+        }
+
+        // ==================== 弹窗 ====================
+        function openMatchModal(i) {
+            const m = matchesData[i];
+            const t = translations[currentLang];
+            document.getElementById('modalMatchName').textContent = m.name;
+            const sc = m.server ? '#00cc66' : '#ff3333';
+            const st = m.server ? t.serverOn : t.serverOff;
+            document.getElementById('modalMatchInfo').innerHTML = `
+                <p><span class="info-label">${t.matchName}</span><br>${esc(m.name)}</p>
+                <p><span class="info-label">${t.matchRules}</span><br>${esc(m.rules)}</p>
+                <p><span class="info-label">${t.matchOrganizer}</span><br>${esc(m.organizer)}</p>
+                <p><span class="info-label">${t.matchMap}</span><br>${esc(m.map)}</p>
+                <p><span class="info-label">${t.serverStatus}</span><br><span style="color:${sc};font-weight:700;">${st}</span></p>
+                <p><span class="info-label">${t.matchTime}</span><br>${esc(m.time)}</p>
+            `;
+            document.getElementById('matchModal').classList.add('active');
+        }
+
+        function openAnnounceModal(i) {
+            const a = announcesData[i];
+            const t = translations[currentLang];
+            document.getElementById('modalAnnounceTitle').textContent = a.title;
+            document.getElementById('modalAnnounceInfo').innerHTML = `
+                <p><span class="info-label">${t.announceTitle}</span><br>${esc(a.title)}</p>
+                <p><span class="info-label">${t.announceContent}</span><br>${esc(a.content)}</p>
+                <p><span class="info-label">${t.announceTime}</span><br>${esc(a.time)}</p>
+                <p><span class="info-label">${t.announceAuthor}</span><br>${esc(a.author)}</p>
+            `;
+            document.getElementById('announceModal').classList.add('active');
+        }
+
+        function closeModals() {
+            document.getElementById('matchModal').classList.remove('active');
+            document.getElementById('announceModal').classList.remove('active');
+        }
+
+        document.getElementById('matchModalClose').onclick = closeModals;
+        document.getElementById('announceModalClose').onclick = closeModals;
+        document.getElementById('matchModal').onclick = e => { if (e.target === e.currentTarget) closeModals(); };
+        document.getElementById('announceModal').onclick = e => { if (e.target === e.currentTarget) closeModals(); };
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
+
+        function esc(s) {
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+
+        // ==================== IP检测 ====================
+        async function detectIP() {
+            try {
+                const r = await fetch('https://ipapi.co/json/');
+                const d = await r.json();
+                return { country: d.country_code, name: d.country_name, ip: d.ip };
+            } catch {
+                try {
+                    const r = await fetch('http://ip-api.com/json/');
+                    const d = await r.json();
+                    return { country: d.countryCode, name: d.country, ip: d.query };
+                } catch {
+                    return { country: 'CN', name: 'China', ip: 'Unknown' };
+                }
+            }
+        }
+
+        function getLanguage(cc) {
+            const map = {
+                'CN':'zh','HK':'zh','TW':'zh','MO':'zh','SG':'zh',
+                'US':'en','GB':'en','CA':'en','AU':'en','NZ':'en','IE':'en',
+                'RU':'ru','BY':'ru','KZ':'ru',
+                'IL':'block'
+            };
+            return map[cc] || 'en';
+        }
+
+        function updatePage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+            if (!t) return;
+            document.getElementById('mainTitle').textContent = t.title;
+            document.getElementById('mainContent').innerHTML = t.noMatchContent;
+            document.getElementById('contactTitle').textContent = t.contactTitle;
+            document.getElementById('qqLabel1').textContent = t.qqLabel;
+            document.getElementById('telegramLabel').textContent = t.telegramLabel;
+            document.getElementById('adminTitle').textContent = t.adminTitle;
+            document.getElementById('adminRole1').textContent = t.adminRole1;
+            document.getElementById('adminRole2').textContent = t.adminRole2;
+            document.getElementById('footerText').textContent = t.footer;
+            document.getElementById('matchSectionTitle').textContent = t.matchSectionTitle;
+            document.getElementById('announceSectionTitle').textContent = t.announceSectionTitle;
+            renderMatches();
+            renderAnnounces();
+            updateDefaultContent();
+        }
+
+        function blockAccess() {
+            document.body.innerHTML = `
+                <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0a0a0a;color:#ff3333;text-align:center;flex-direction:column;font-family:'Manrope',sans-serif;">
+                    <div style="font-size:5rem;margin-bottom:1rem;">🚫</div>
+                    <h1 style="font-size:2rem;font-weight:700;">ACCESS DENIED</h1>
+                    <p style="color:#888;margin-top:0.5rem;">הגישה לאתר זה אינה מורשית מאזורך</p>
+                </div>
+            `;
+        }
+
+        // ==================== 初始化 ====================
+        async function init() {
+            const ip = await detectIP();
+            console.log('IP:', ip);
+            const lang = getLanguage(ip.country);
+            if (lang === 'block') { blockAccess(); return; }
+            currentLang = lang;
+            const [m, a] = await Promise.all([scanMatches(), scanAnnounces()]);
+            matchesData = m;
+            announcesData = a;
+            updatePage(lang);
+            console.log(`语言: ${lang}, 比赛: ${m.length}, 公告: ${a.length}`);
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
